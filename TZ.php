@@ -1,17 +1,18 @@
 <?php
 
-// include_once '/var/www/html/models/main.php';
-
+//include_once '/var/www/html/models/main.php';
+include_once './main.php';/*для  примера  положим  сюда  */
+//пометил символом  ✔ то что  выполнно
 // ---1 Задание.
 // Данный парсер готов и собирает информацию с сайта https://proverki.gov.ru
 // Задача, которая в нем решена - собрать за последние 15 дней ссылки на архивы проверок объединив каждую дату в 1 массив по всем месяцам за последний год
 // Ваша задача:
-// Прописать свой класс main.php в котором лежат функции, регулярок и Curl (а из этого файла их убрать), и совместить Curl запрпосы в функцию в данном классе
+//✔ Прописать свой класс main.php в котором лежат функции, регулярок и Curl (а из этого файла их убрать), и совместить Curl запрпосы в функцию в данном классе
 // Исправить ошибку с изменением кол-ва дней для парсинга, к примеру 15 ($dateSeveral) заменить на 2 дня.
-// Так же изменить схему обработки массивов с 5 total1/2/3/4/5 в схему сопоставления массивов так же убрав свитч
-// Либо структурировать код на своё усмотрение. В итоге получить нужные данные только с правильным архитектурным кодом
+//✔ Так же изменить схему обработки массивов с 5 total1/2/3/4/5 в схему сопоставления массивов так же убрав свитч
+//✔ Либо структурировать код на своё усмотрение. В итоге получить нужные данные только с правильным архитектурным кодом
 
-// ---2 Задание.
+//✔ ---2 Задание.  см  файл  service2.php
 // После, с этой же готовой архитектурой и функциями сделать аналогичный парсер на сайт
 //0. https://www.reestr-zalogov.ru/search/index
 //1. Переходим во вкладку - по информации о предмете залога
@@ -39,10 +40,10 @@
 // X8942261GF0DA8002
 // X89943000F3AD7508
 
-//3. Ставим галочку (Осуществить поиск...)
-//4. Нажимаем кнопку найти
+//3.✔ Ставим галочку (Осуществить поиск...)
+//4.✔ Нажимаем кнопку найти
 //5. Решаем капчу (с помощью сервисов | с помощью функции нахождения пикселей | других программных комплексов на выбор)
-//6. Получаем ответ в виде двух PDF файлов, складываем их в папку.
+//6.✔ Получаем ответ в виде двух PDF файлов, складываем их в папку.
 //7. Всё.
 
 // ---3. Данное задание не обязательно. Оно идёт со сложным уровнем.
@@ -55,13 +56,13 @@ $dateSeveral = 15;
 
 // получаем заголовки на страницу открытые данные
 $url = "https://proverki.gov.ru/wps/portal/Home/opendata/";
-$response = cURL(trim($url));
+$response = Main::cURL(trim($url));
 
 // вытаскиваем из заголовков часть url
 $url = Main::getRegex('/https.*?(\s)/m', $response, 0);
 
 // получаем страницу открытые данные
-$response = cURL(trim($url));
+$response = Main::cURL(trim($url));
 
 // вытаскиваем из body часть url
 $url = Main::getRegex('/\/wps.*?NJgetRegistryList=\//', $response, 0);
@@ -71,7 +72,7 @@ $url = "https://proverki.gov.ru$url";
 $url2= str_ireplace("NJgetRegistryList", "NJgetOpenDataItemUrl", "$url");
 
 // страница открытые данные
-$response = cURL2(trim($url));
+$response = Main::cURL2(trim($url));
 
 // переводим в массив
 $result = json_decode ($response, true);
@@ -93,19 +94,19 @@ $webUrl = $result['result'][$year][$month][webUrl];
 $url2 = "$url2?id=$id&title=$title&link=$link&format=xml&webUrl=$webUrl&month=$month&year=$year";
 
 // запрос на страницу паспорт
-$response = cURL2(trim($url2));
+$response = Main::cURL2(trim($url2));
 
 $url = Main::getRegex('/(?<=:").*(?=")/', $response, 0);
 
 // запрос на получение url страницы скачать
 $url = "https://proverki.gov.ru$url";
-$response = cURL(trim($url));
+$response = Main::cURL(trim($url));
 
 $url = Main::getRegex('/\/wps.*?NJgetHistoryList=\//', $response, 0);
 
 // запрос на архивы текущего месяца
 $url2 = "https://proverki.gov.ru$url?registryId=$id";
-$response = cURL2(trim($url2));
+$response = Main::cURL2(trim($url2));
 $result = json_decode ($response, true);
 
 // первый  id и дата
@@ -115,6 +116,8 @@ $result = json_decode ($response, true);
 // текущая дата в формате гов
 $currentDate = date(Ymd);
 $lastDate = date("Ymd", mktime(0, 0, 0, date('m'), date('d') - $dateSeveral, date('Y')));
+$total = [];
+
 
 // в цикле перебираем массив и узнаем кол-во ссылок
 for($i=0; $i < 30; $i++){
@@ -130,33 +133,26 @@ $numberLinks;
 $id;
 // запрос на архивы
 //  цикл 13 url за 13 месяцев с текущего месяца по текущий месяц в прошлом году
-$total=[];
 
-$total1=[];
-$total2=[];
-$total3=[];
-$total4=[];
-$total5=[];
 for($i=0; $i < 13; $i++) {
     $currentId = $id - $i;
     $url2 = "https://proverki.gov.ru$url?registryId=$currentId";
-    $response = cURL2(trim($url2));
+    $response = Main::cURL2(trim($url2));
     $result = json_decode($response, true);
     $currentResult = [];
     for ($z=0; $z < 5; $z++) {
         $currentResult[] = $result['result'][$z];
-        switch ($z) {
-            case "0":$total1[] = $result['result'][$z];break;
-            case "1":$total2[] = $result['result'][$z];break;
-            case "2":$total3[] = $result['result'][$z];break;
-            case "3":$total4[] = $result['result'][$z];break;
-            case "4":$total5[] = $result['result'][$z];break;
-        }
+        $total[] = ($result['result'][$z]);
     }
-    $total = array_merge ( $total1,$total2,$total3,$total4,$total5 );
+
 }
 
-echo json_encode($total);
+echo '<pre><code class="json">' . json_encode($total, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . '</code></pre>
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/idea.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+';
 
 function cURL($url)
 {
