@@ -6,9 +6,9 @@ if(!isset($_REQUEST['sloved'])) {
     $url = 'https://www.reestr-zalogov.ru/api/search/fedresurs?token=5byc7';
     $capcha = 'https://www.reestr-zalogov.ru/captcha/generate?' . rand();
     $result = Main::cURL3($capcha, '');
-    $ok = file_put_contents('./generate.jpg', $result, FILE_BINARY);
+    $ok = file_put_contents('./img/generate.jpg', $result, FILE_BINARY);
 
-    echo  '<div><img src="/tz/generate.jpg?dummy='.mt_rand().'" alt=""><hr><form action=""><input type="text" required name="sloved"><input type="submit" value="отправить"></form></div>';
+    echo  '<div><img src="/img/generate.jpg?dummy='.mt_rand().'" alt=""><hr><form action=""><input type="text" required name="sloved"><input type="submit" value="отправить"></form>'.Main::ul().Main::css().'</div>';
 }else{
     $code = $_REQUEST['sloved'];
 $slovedcaptcha = 'https://www.reestr-zalogov.ru/api/search/notary?token=' . $code;
@@ -19,7 +19,7 @@ $links[] = 'https://www.reestr-zalogov.ru'. $json['data'][0]['history'][1]['link
 $links[] = 'https://www.reestr-zalogov.ru'. $json['data'][0]['history'][2]['link'];
     foreach ($links as $index => $link) {
         $pdf = Main::cURL3($link, '');
-        file_put_contents($index.'.pdf',  $pdf);
+        file_put_contents('./pdf/'.$index.'.pdf',  $pdf);
 }
 
 }

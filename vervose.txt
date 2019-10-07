@@ -1,0 +1,34 @@
+* Rebuilt URL to: https://www.reestr-zalogov.ru/
+*   Trying 193.35.100.35...
+* TCP_NODELAY set
+* Connected to www.reestr-zalogov.ru (193.35.100.35) port 443 (#0)
+* ALPN, offering http/1.1
+* Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+* ignoring certificate verify locations due to disabled peer verification
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=RU; L=Moscow; O=Fund 'The Center of innovations and information technologies'; OU=Web; CN=www.reestr-zalogov.ru
+*  start date: Apr 15 00:00:00 2019 GMT
+*  expire date: Jun 13 12:00:00 2020 GMT
+*  subjectAltName: host "www.reestr-zalogov.ru" matched cert's "www.reestr-zalogov.ru"
+*  issuer: C=US; O=DigiCert Inc; OU=www.digicert.com; CN=Thawte RSA CA 2018
+*  SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.
+> POST / HTTP/1.1
+Host: www.reestr-zalogov.ru
+Accept: */*
+Cookie: JSESSIONID=CDAE2841BC8DA6E8DE42CCC6D8ECBF05
+Content-Length: 0
+Content-Type: application/x-www-form-urlencoded
+
+< HTTP/1.1 302 
+< Server: nginx/1.12.2
+< Date: Mon, 07 Oct 2019 12:21:21 GMT
+< Content-Length: 0
+< Connection: keep-alive
+< X-Application-Context: application:production:80
+< Location: http://www.reestr-zalogov.ru/state/index
+< Strict-Transport-Security: max-age=31536000; includeSubDomains
+* HTTP error before end of send, stop sending
+< 
+* Closing connection 0
